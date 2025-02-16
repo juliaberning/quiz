@@ -29,6 +29,7 @@ onMounted(async () => {
   </header>
 
   <RouterView />
+  <div class="text-4xl font-bold text-blue-500">This app is using Tailwind!</div>
 </template>
 
 <style scoped>
