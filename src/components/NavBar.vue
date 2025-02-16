@@ -21,9 +21,8 @@
           </div>
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
-              <!-- Home and About links with router-link -->
               <router-link to="/" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" active-class="bg-gray-900" exact-active-class="bg-gray-900">Home</router-link>
-              <router-link to="/about" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" active-class="bg-gray-900" exact-active-class="bg-gray-900">About</router-link>
+              <router-link to="/quiz" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" active-class="bg-gray-900" exact-active-class="bg-gray-900">Quiz</router-link>
               <router-link to="/signup" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" active-class="bg-gray-900" exact-active-class="bg-gray-900">Sign Up</router-link>
               <router-link to="/login" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" active-class="bg-gray-900" exact-active-class="bg-gray-900">Login</router-link>
             </div>
