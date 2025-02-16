@@ -40,8 +40,8 @@ quiz_frontend/.idea/
 # ==========================
 # 🖥 Backend (FastAPI/Django)
 # ==========================
-quiz_backend/__pycache__/
-quiz_backend/*.py[cod]
+quiz_backend/**/__pycache__/
+quiz_backend/**/*.py[cod]
 quiz_backend/.pytest_cache/
 quiz_backend/migrations/
 quiz_backend/*.sqlite3
