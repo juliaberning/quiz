@@ -35,7 +35,7 @@
     <div class="sm:hidden" id="mobile-menu">
       <div class="space-y-1 px-2 pt-2 pb-3">
         <router-link to="/" class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white" active-class="bg-gray-900" exact-active-class="bg-gray-900">Home</router-link>
-        <router-link to="/about" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white" active-class="bg-gray-900" exact-active-class="bg-gray-900">About</router-link>
+        <router-link to="/quiz" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white" active-class="bg-gray-900" exact-active-class="bg-gray-900">About</router-link>
       </div>
     </div>
   </nav>
