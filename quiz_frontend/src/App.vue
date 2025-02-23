@@ -9,4 +9,16 @@ import NavBar from './components/NavBar.vue'
       <RouterView />
     </div>
   </div>
+  <Toast />
 </template>
+
+<script>
+import Toast from '@/components/Toast.vue'
+
+export default {
+  components: {
+    Toast
+  }
+}
+
+</script>
