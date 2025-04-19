@@ -1,29 +1,27 @@
 import { defineStore } from 'pinia'
 
-export const useToastStore = defineStore({
-    id: 'toast',
-
+const useToastStore = defineStore('toast', {
     state: () => ({
-        toast: {
-            show: false,
-            message: null,
-            type: null,
-        }
+        show: false,
+        message: null,
+        type: null,
     }),
 
     actions: {
         showToast(message, type) {
             console.log('showToast', message, type)
 
-            this.toast.message = message
-            this.toast.type = type
-            this.toast.show = true
+            this.message = message
+            this.type = type
+            this.show = true
         },
 
         hideToast() {
             console.log('hideToast')
 
-            this.toast.show = false
+            this.show = false
         }
     }
 })
+
+export default useToastStore

@@ -2,87 +2,80 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { ref } from 'vue'
 
-export const useUserStore = defineStore({
-    id: 'user',
-
+const useUserStore = defineStore('user', {
     state: () => ({
-        user: {
-            isAuthenticated: false,
-            id: null,
-            name: null,
-            email: null,
-            access: null,
-            refresh: null ,
-        }
+        isAuthenticated: false,
+        id: null,
+        name: null,
+        email: null,
+        access: null,
+        refresh: null,
     }),
 
     actions: {
         initStore() {
             if (localStorage.getItem('user.access')) {
-                this.user,access = JSON.parse(localStorage.getItem('user.access'))
-                this.user.refresh = JSON.parse(localStorage.getItem('user.refresh'))
-                this.user.id = JSON.parse(localStorage.getItem('user.id'))
-                this.user.name = JSON.parse(localStorage.getItem('user.name'))
-                this.user.email = JSON.parse(localStorage.getItem('user.email'))
-                this.user.isAuthenticated = true
+                this.access = JSON.parse(localStorage.getItem('user.access') || '')
+                this.refresh = JSON.parse(localStorage.getItem('user.refresh') || '')
+                this.id = JSON.parse(localStorage.getItem('user.id') || '')
+                this.name = JSON.parse(localStorage.getItem('user.name') || '')
+                this.email = JSON.parse(localStorage.getItem('user.email') || '')
+                this.isAuthenticated = true
 
                 this.refreshToken()
 
-                console.log('Initialized users', this.user)
+                console.log('Initialized users', this)
             }
         },
 
-        setToken(data) {
-            console.log('setToken', data)
+        setToken({ access, refresh }) {
+            console.log('setToken', { access, refresh })
 
-            this.user.access = data.access
-            this.user.refresh = data.refresh
-            this.user.isAuthenticated = true
+            this.access = access
+            this.refresh = refresh
+            this.isAuthenticated = true
 
-            localStorage.setItem('user.access', data.access)
-            localStorage.setItem('user.refresh', data.refresh)
+            localStorage.setItem('user.access', access)
+            localStorage.setItem('user.refresh', refresh)
         },
 
         removeToken() {
             console.log('removeToken')
 
-            this.user.access = null
-            this.user.refresh = null
-            this.user.isAuthenticated = false
-            this.user.id = false
-            this.user.name = false
-            this.user.email = false
+            this.access = null
+            this.refresh = null
+            this.isAuthenticated = false
+            this.id = null
+            this.name = null
+            this.email = null
 
-            localStorage.setItem('user.access', ' ')
-            localStorage.setItem('user.refresh', ' ')
-            localStorage.setItem('user.id', ' ')
-            localStorage.setItem('user.name', ' ')
-            localStorage.setItem('user.email', ' ')
+            localStorage.setItem('user.access', '')
+            localStorage.setItem('user.refresh', '')
+            localStorage.setItem('user.id', '')
+            localStorage.setItem('user.name', '')
+            localStorage.setItem('user.email', '')
+        },
 
-        }, 
+        setUserInfo({ id, name, email }) {
+            console.log('setUserInfo', { id, name, email })
 
-        setUserInfo(user) {
-            console.log('setUserInfo', user)
+            this.id = id
+            this.name = name
+            this.email = email
 
-            this.user.id = user.id
-            this.user.name = user.name
-            this.user.email = user.email
+            localStorage.setItem('user.id', id.toString())
+            localStorage.setItem('user.name', name)
+            localStorage.setItem('user.email', email)
 
-            localStorage.setItem('user.id', user.id)
-            localStorage.setItem('user.name', user.name)
-            localStorage.setItem('user.email', user.email)
-
-            console.log('User', this.user)
-
-        }, 
+            console.log('User', this)
+        },
 
         refreshToken() {
-
             axios.post('api/v1/account/refresh/', {
-                refresh: this.user.refresh
+                refresh: this.refresh
             })
             .then(response => {
-                this.user.access = response.data.access
+                this.access = response.data.access
 
                 localStorage.setItem('user.access', response.data.access)
 
@@ -90,10 +83,10 @@ export const useUserStore = defineStore({
             })
             .catch((error) => {
                 console.log('Error', error)
-
                 this.removeToken()
-                
             })
         }
     },
 })
+
+export default useUserStore

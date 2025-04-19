@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <template v-if="errors">
+      <template v-if="errors.length > 0">
         <div class="bg-red-300 text-white rounded-lg p-6">
           <p v-for="error in errors" v-bind:key="error"> {{ error }} </p>
         </div>
@@ -54,15 +54,17 @@
 
 <script>
 import axios from 'axios'
-
-import { useUserStore } from '@/stores/user'
+import useUserStore from '@/stores/user'
+import useToastStore from '@/stores/toast'
 
 export default {
 setup() {
     const userStore = useUserStore()
+    const toastStore = useToastStore()
 
     return {
-        userStore
+        userStore,
+        toastStore
     }
 },
 
@@ -92,12 +94,12 @@ methods: {
           .post('/api/login/', this.form)
           .then(response => {
               this.userStore.setToken(response.data)
-
+              this.toastStore.showToast('Successfully logged in!', 'bg-emerald-green')
               axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
           })
           .catch(error => {
               console.log('error', error)
-
+              this.toastStore.showToast('The email or password is incorrect! Or the user is not activated!', 'bg-red-500')
               this.errors.push('The email or password is incorrect! Or the user is not activated!')
           })
     }
@@ -107,11 +109,11 @@ methods: {
           .get('/api/me/')
           .then(response => {
               this.userStore.setUserInfo(response.data)
-
               this.$router.push('/')
           })
           .catch(error => {
               console.log('error', error)
+              this.toastStore.showToast('Failed to fetch user information', 'bg-red-500')
           })
     }
   }

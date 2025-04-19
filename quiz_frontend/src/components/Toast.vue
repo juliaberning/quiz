@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { useToastStore } from '@/stores/toast';
+import useToastStore from '@/stores/toast';
 
 const store = useToastStore();
 
