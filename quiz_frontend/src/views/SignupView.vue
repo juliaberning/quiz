@@ -39,7 +39,7 @@
             </div>
           </div>
   
-          <template v-if="errors">
+          <template v-if="errors.length > 0">
             <div class="bg-red-300 text-white rounded-lg p-6">
               <p v-for="error in errors" v-bind:key="error"> {{ error }} </p>
             </div>
@@ -60,69 +60,54 @@
     </div>
 </template>
 
-<script>
-import axios from 'axios';
-import useToastStore from '@/stores/toast';
+<script setup>
+import { ref } from 'vue'
+import axios from 'axios'
+import useToastStore from '@/stores/toast'
 
-export default {
-  setup() {
-    const toastStore = useToastStore();
+const toastStore = useToastStore()
 
-    return {
-      toastStore
-    }
-  },
+const form = ref({
+  email: '',
+  name: '',
+  password1: '',
+  password2: '',
+})
+const errors = ref([])
 
-  data() {
-    return {
-      form: {
-        email: '',
-        name: '',
-        password1: '',
-        password2: '',
-      },
-      errors: [], 
-    }
-  },
+const submitForm = () => {
+  errors.value = []
+  
+  if (form.value.email === '') {
+    errors.value.push('Your email is required.')
+  }
 
-  methods: {
-    submitForm() {
-      this.errors = []
-      
-      if (this.form.email === '') {
-        this.errors.push('Your email is required.')
-      }
+  if (form.value.name === '') {
+    errors.value.push('Your name is required.') 
+  }
 
-      if (this.form.name === '') {
-        this.errors.push('Your name is required.') 
-      }
+  if (form.value.password1 === '') {
+    errors.value.push('Your password is required.')
+  }
 
-      if (this.form.password1 === '') {
-        this.errors.push('Your password is required.')
-      }
-
-      if (this.errors.length === 0) {
-        axios
-          .post('/api/signup/', this.form)
-          .then(response => {
-            console.log('Signup Response:', response);
-            if (response.data.message === 'success') {
-              this.toastStore.showToast(5000, 'The user is registered. Please login', 'bg-emerald-green');
-              this.form.email = '';
-              this.form.name = ''; 
-              this.form.password1 = '';
-              this.form.password2 = '';
-            } else {
-              this.toastStore.showToast(5000, 'Something went wrong. Please try again', 'bg-red-500');
-            }
-          })
-          .catch(error => {
-            console.log('error', error)
-          })
-      }
-
-    }
+  if (errors.value.length === 0) {
+    axios
+      .post('/api/signup/', form.value)
+      .then(response => {
+        console.log('Signup Response:', response);
+        if (response.data.message === 'success') {
+          toastStore.showToast(5000, 'The user is registered. Please login', 'bg-emerald-green');
+          form.value.email = '';
+          form.value.name = ''; 
+          form.value.password1 = '';
+          form.value.password2 = '';
+        } else {
+          toastStore.showToast(5000, 'Something went wrong. Please try again', 'bg-red-500');
+        }
+      })
+      .catch(error => {
+        console.log('error', error)
+      })
   }
 }
-
 </script>

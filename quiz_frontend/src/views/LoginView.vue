@@ -52,71 +52,60 @@
 
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
 import useUserStore from '@/stores/user'
 import useToastStore from '@/stores/toast'
 
-export default {
-setup() {
-    const userStore = useUserStore()
-    const toastStore = useToastStore()
+const router = useRouter()
+const userStore = useUserStore()
+const toastStore = useToastStore()
 
-    return {
-        userStore,
-        toastStore
-    }
-},
+const form = ref({
+  email: '',
+  password: '',
+})
+const errors = ref([])
 
-data() {
-    return {
-        form: {
-            email: '',
-            password: '',
-        },
-        errors: []
-    }
-},
-methods: {
-  async submitForm() {
-    this.errors = []
+const submitForm = async () => {
+  errors.value = []
 
-    if (this.form.email === '') {
-      this.errors.push('Your e-mail is missing')
-    }
-
-    if (this.form.password === '') {
-      this.errors.push('Your password is missing')
-    }
-
-    if (this.errors.length === 0) {
-      await axios
-          .post('/api/login/', this.form)
-          .then(response => {
-              this.userStore.setToken(response.data)
-              this.toastStore.showToast('Successfully logged in!', 'bg-emerald-green')
-              axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
-          })
-          .catch(error => {
-              console.log('error', error)
-              this.toastStore.showToast('The email or password is incorrect! Or the user is not activated!', 'bg-red-500')
-              this.errors.push('The email or password is incorrect! Or the user is not activated!')
-          })
-    }
-    
-    if (this.errors.length === 0) {
-      await axios
-          .get('/api/me/')
-          .then(response => {
-              this.userStore.setUserInfo(response.data)
-              this.$router.push('/')
-          })
-          .catch(error => {
-              console.log('error', error)
-              this.toastStore.showToast('Failed to fetch user information', 'bg-red-500')
-          })
-    }
+  if (form.value.email === '') {
+    errors.value.push('Your e-mail is missing')
   }
-}
+
+  if (form.value.password === '') {
+    errors.value.push('Your password is missing')
+  }
+
+  if (errors.value.length === 0) {
+    await axios
+      .post('/api/login/', form.value)
+      .then(response => {
+        userStore.setToken(response.data)
+        toastStore.showToast('Successfully logged in!', 'bg-emerald-green')
+        axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
+      })
+      .catch(error => {
+        console.log('error', error)
+        toastStore.showToast('The email or password is incorrect! Or the user is not activated!', 'bg-red-500')
+        errors.value.push('The email or password is incorrect! Or the user is not activated!')
+      })
+  }
+  
+  if (errors.value.length === 0) {
+    await axios
+      .get('/api/me/')
+      .then(response => {
+        userStore.setUserInfo(response.data)
+        router.push('/')
+      })
+      .catch(error => {
+        console.log('error', error)
+        toastStore.showToast('Failed to fetch user information', 'bg-red-500')
+      })
+  }
 }
 </script>

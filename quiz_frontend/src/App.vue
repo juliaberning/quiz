@@ -1,7 +1,3 @@
-<script setup>
-import NavBar from './components/NavBar.vue'
-</script>
-
 <template>
   <div class="min-h-screen bg-gray-100"> 
     <NavBar class="bg-white text-gray-900 shadow-md w-full" /> 
@@ -12,13 +8,8 @@ import NavBar from './components/NavBar.vue'
   <Toast />
 </template>
 
-<script>
+<script setup>
 import Toast from '@/components/Toast.vue'
-
-export default {
-  components: {
-    Toast
-  }
-}
+import NavBar from './components/NavBar.vue'
 
 </script>
