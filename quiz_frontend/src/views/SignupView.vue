@@ -1,69 +1,91 @@
 <template>
-    <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company">
-        <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Create your account</h2>
-      </div>
-  
-      <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form class="space-y-6" @submit.prevent="submitForm">
-          <!-- Name Field -->
-          <div>
-            <label for="name" class="block text-sm/6 font-medium text-gray-900">Full Name</label>
-            <div class="mt-2">
-              <input type="text" v-model="form.name" name="name" id="name" autocomplete="name" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-            </div>
-          </div>
-  
-          <!-- Email Field -->
-          <div>
-            <label for="email" class="block text-sm/6 font-medium text-gray-900">Email address</label>
-            <div class="mt-2">
-              <input type="email" v-model="form.email" name="email" id="email" autocomplete="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-            </div>
-          </div>
-  
-          <!-- Password Field -->
-          <div>
-            <label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
-            <div class="mt-2">
-              <input type="password" v-model="form.password1" name="password" id="password" autocomplete="new-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-            </div>
-          </div>
-  
-          <!-- Confirm Password Field -->
-          <div>
-            <label for="confirm_password" class="block text-sm/6 font-medium text-gray-900">Confirm Password</label>
-            <div class="mt-2">
-              <input type="password" v-model="form.password2" name="confirm_password" id="confirm_password" autocomplete="new-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-            </div>
-          </div>
-  
-          <template v-if="errors.length > 0">
-            <div class="bg-red-300 text-white rounded-lg p-6">
-              <p v-for="error in errors" v-bind:key="error"> {{ error }} </p>
-            </div>
-          </template>
+  <v-container class="fill-height">
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="8" md="6" lg="4">
+        <v-card class="elevation-12">
+          <v-toolbar color="primary" dark flat>
+            <v-toolbar-title>Create Account</v-toolbar-title>
+          </v-toolbar>
+          
+          <v-card-text>
+            <v-form @submit.prevent="submitForm">
+              <v-text-field
+                v-model="form.name"
+                label="Full Name"
+                name="name"
+                prepend-icon="mdi-account"
+                type="text"
+                required
+              ></v-text-field>
 
-          <!-- Submit Button -->
-          <div>
-            <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create Account</button>
-          </div>
-        </form>
-  
-        <!-- Login Link -->
-        <p class="mt-10 text-center text-sm/6 text-gray-500">
-          Already have an account?
-          <router-link to="/login" class="font-semibold text-indigo-600 hover:text-indigo-500">Log in </router-link>
-        </p>
-      </div>
-    </div>
+              <v-text-field
+                v-model="form.email"
+                label="Email"
+                name="email"
+                prepend-icon="mdi-email"
+                type="email"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="form.password1"
+                label="Password"
+                name="password"
+                prepend-icon="mdi-lock"
+                type="password"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="form.password2"
+                label="Confirm Password"
+                name="confirm_password"
+                prepend-icon="mdi-lock-check"
+                type="password"
+                required
+              ></v-text-field>
+
+              <v-alert
+                v-if="errors.length > 0"
+                type="error"
+                class="mb-4"
+              >
+                <div v-for="error in errors" :key="error">
+                  {{ error }}
+                </div>
+              </v-alert>
+
+              <v-btn
+                type="submit"
+                color="primary"
+                block
+                class="mt-4"
+              >
+                Create Account
+              </v-btn>
+            </v-form>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              text
+              color="primary"
+              to="/login"
+            >
+              Already have an account? Log in
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
-import useToastStore from '@/stores/toast'
+import { useToastStore } from '@/stores/toast'
 
 const toastStore = useToastStore()
 

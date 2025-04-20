@@ -1,55 +1,67 @@
 <template>
-<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-    <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company">
-    <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Log into your account</h2>
-  </div>
+  <v-container class="fill-height">
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="8" md="6" lg="4">
+        <v-card class="elevation-12">
+          <v-toolbar color="primary" dark flat>
+            <v-toolbar-title>Login</v-toolbar-title>
+          </v-toolbar>
+          
+          <v-card-text>
+            <v-form @submit.prevent="submitForm">
+              <v-text-field
+                v-model="form.email"
+                label="Email"
+                name="email"
+                prepend-icon="mdi-email"
+                type="email"
+                required
+              ></v-text-field>
 
-  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form class="space-y-6" @submit.prevent="submitForm">
+              <v-text-field
+                v-model="form.password"
+                label="Password"
+                name="password"
+                prepend-icon="mdi-lock"
+                type="password"
+                required
+              ></v-text-field>
 
-      <!-- Email Field -->
-      <div>
-        <label for="email" class="block text-sm/6 font-medium text-gray-900">Email address</label>
-        <div class="mt-2">
-          <input type="email" v-model="form.email" name="email" id="email" autocomplete="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-        </div>
-      </div>
+              <v-alert
+                v-if="errors.length > 0"
+                type="error"
+                class="mb-4"
+              >
+                <div v-for="error in errors" :key="error">
+                  {{ error }}
+                </div>
+              </v-alert>
 
-      <!-- Password Field -->
-      <div>
-        <div class="flex items-center justify-between">
-          <label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
-          <div class="text-sm">
-            <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
-          </div>
-        </div>
-        <div class="mt-2">
-          <input type="password" v-model="form.password" name="password" id="password" autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-        </div>
-      </div>
+              <v-btn
+                type="submit"
+                color="primary"
+                block
+                class="mt-4"
+              >
+                Login
+              </v-btn>
+            </v-form>
+          </v-card-text>
 
-      <template v-if="errors.length > 0">
-        <div class="bg-red-300 text-white rounded-lg p-6">
-          <p v-for="error in errors" v-bind:key="error"> {{ error }} </p>
-        </div>
-      </template>
-
-      <!-- Submit Button -->
-      <div>
-        <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Login</button>
-      </div>
-    </form>
-
-    <!-- Login Link -->
-    <p class="mt-10 text-center text-sm/6 text-gray-500">
-      Not a member?
-      <router-link to="/signup" class="font-semibold text-indigo-600 hover:text-indigo-500">Sign up</router-link>
-
-    </p>
-  </div>
-</div>
-
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              text
+              color="primary"
+              to="/signup"
+            >
+              Not a member? Sign up
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
@@ -57,7 +69,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import useUserStore from '@/stores/user'
-import useToastStore from '@/stores/toast'
+import { useToastStore } from '@/stores/toast'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -85,12 +97,12 @@ const submitForm = async () => {
       .post('/api/login/', form.value)
       .then(response => {
         userStore.setToken(response.data)
-        toastStore.showToast('Successfully logged in!', 'bg-emerald-green')
+        toastStore.showToast('Successfully logged in!', 'success')
         axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
       })
       .catch(error => {
         console.log('error', error)
-        toastStore.showToast('The email or password is incorrect! Or the user is not activated!', 'bg-red-500')
+        toastStore.showToast('The email or password is incorrect! Or the user is not activated!', 'error')
         errors.value.push('The email or password is incorrect! Or the user is not activated!')
       })
   }
@@ -104,7 +116,7 @@ const submitForm = async () => {
       })
       .catch(error => {
         console.log('error', error)
-        toastStore.showToast('Failed to fetch user information', 'bg-red-500')
+        toastStore.showToast('Failed to fetch user information', 'error')
       })
   }
 }

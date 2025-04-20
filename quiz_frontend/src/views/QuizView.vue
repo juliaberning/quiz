@@ -1,82 +1,77 @@
 <template>
-  <div class="quiz-card">
-    <div
-      class="relative flex flex-col my-6 bg-white shadow-sm border border-slate-200 hover:border-slate-300 hover:shadow-md rounded-lg transition-all cursor-pointer w-96"
-    >
-      <div class="p-4">
-        <!-- Question Title -->
-        <h5 class="mb-2 text-slate-800 text-xl font-semibold">
-          {{ currentQuestion.text }}
-        </h5>
+  <v-container>
+    <v-row justify="center">
+      <v-col cols="12" md="8" lg="6">
+        <v-card class="elevation-4">
+          <v-card-title class="text-h5 pa-4">
+            {{ currentQuestion.text }}
+          </v-card-title>
 
-        <!-- Answer Choices -->
-        <ul class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-          <li 
-            v-for="(answer, index) in currentQuestion.answers" 
-            :key="index" 
-            class="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600"
-          >
-            <div class="flex items-center ps-3">
-              <input
-                v-if="currentQuestion.questionType === 'single-choice'"
-                :id="`answer-${index}`"
-                type="radio"
+          <v-card-text>
+            <v-radio-group
+              v-if="currentQuestion.questionType === 'single-choice'"
+              v-model="selectedAnswer"
+            >
+              <v-radio
+                v-for="(answer, index) in currentQuestion.answers"
+                :key="index"
                 :value="answer"
-                v-model="selectedAnswer"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-              />
-              <input
-                v-else
-                :id="`answer-${index}`"
-                type="checkbox"
+                :label="answer"
+                class="mb-2"
+              ></v-radio>
+            </v-radio-group>
+
+            <div v-else>
+              <v-checkbox
+                v-for="(answer, index) in currentQuestion.answers"
+                :key="index"
                 :value="answer"
-                v-model="selectedAnswers"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-              />
-              <label
-                :for="`answer-${index}`"
-                class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-              >
-                {{ answer }}
-              </label>
+                :label="answer"
+                class="mb-2"
+                @update:model-value="(checked) => toggleAnswer(answer, checked)"
+              ></v-checkbox>
             </div>
-          </li>
-        </ul>
+            <div class="d-flex flex-start ga-2">
+              <v-btn
+              color="primary"
+              class="mt-4"
+              @click="checkAnswer"
+            >
+              Submit
+            </v-btn>
+            <v-btn
+              v-if="showResult"
+              color="success"
+              class="mt-4"
+              @click="nextQuestion"
+            >
+              Next Question
+            </v-btn>
+            </div>
+            
 
-        <!-- View Solution Button -->
-        <button 
-          @click="checkAnswer"
-          class="mt-4 w-full px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition"
-        >
-          Submit
-        </button>
+            <v-alert
+              v-if="showResult"
+              :type="isAnswerCorrect ? 'success' : 'error'"
+              class="mt-4"
+            >
+              {{ resultMessage }}
+            </v-alert>
+              <div v-if="resultExplanation" class="mt-2">
+                {{ resultExplanation }}
+              </div>
+            
 
-        <!-- Result Message -->
-        <p v-if="showResult" class="mt-3 text-center font-semibold">
-          <span :class="resultMessageClass">
-            {{ resultMessage }}
-          </span>
-          <br>
-          <span :class="resultExplanationClass">
-            {{ resultExplanation }}
-          </span>
-        </p>
 
-        <!-- Next Question Button -->
-        <button 
-          v-if="showResult"
-          @click="nextQuestion"
-          class="mt-3 w-full px-4 py-2 text-white bg-green-600 hover:bg-green-500 rounded-lg transition"
-        >
-          Next Question
-        </button>
-      </div>
-    </div>
-  </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const questions = ref([
   { 
@@ -114,21 +109,21 @@ const questions = ref([
     explanation: 'In the Composition API, `setup()` runs before any lifecycle hooks and serves the same purpose as `beforeCreate` and `created`, so those two hooks are no longer needed or exposed as separate functions.',
     tags: ['vue'],
     difficulty: 'medium'
-}, 
-{
+  }, 
+  {
     questionType: "single-choice",
     text: "What is the main advantage of using `<script setup>` in Vue 3?",
     answers: [
-        "It automatically exposes all top-level bindings to the template",
-        "It provides better TypeScript support than the Options API",
-        "It reduces the amount of boilerplate code needed",
-        "All of the above"
+      "It automatically exposes all top-level bindings to the template",
+      "It provides better TypeScript support than the Options API",
+      "It reduces the amount of boilerplate code needed",
+      "All of the above"
     ],
     correctAnswers: ["All of the above"],
     explanation: "The `<script setup>` syntax in Vue 3 combines several benefits: it automatically exposes all top-level bindings to the template, provides better TypeScript support through better type inference, and significantly reduces boilerplate code by eliminating the need for the `setup()` function and explicit returns.",
     tags: ['vue', 'typescript'],
     difficulty: "intermediate"
-}
+  }
 ]);
 
 const currentIndex = ref(0);
@@ -137,41 +132,63 @@ const selectedAnswer = ref('');
 const selectedAnswers = ref([]);
 const showResult = ref(false);
 const resultMessage = ref('');
-const resultMessageClass = ref('');
 const resultExplanation = ref('');
-const resultExplanationClass = ref('');
+const isAnswerCorrect = ref(false);
+
+// Add a watch to debug selectedAnswers changes
+watch(selectedAnswers, (newVal) => {
+  console.log('selectedAnswers changed:', newVal);
+}, { deep: true });
+
+const toggleAnswer = (answer, checked) => {
+  console.log('Toggle answer:', answer, checked);
+  if (checked) {
+    selectedAnswers.value = [...selectedAnswers.value, answer];
+  } else {
+    selectedAnswers.value = selectedAnswers.value.filter(a => a !== answer);
+  }
+  console.log('Updated selectedAnswers:', selectedAnswers.value);
+};
 
 const checkAnswer = () => {
   showResult.value = true;
-  console.log('Selected:', currentQuestion.value.questionType === 'single-choice' ? selectedAnswer.value : selectedAnswers.value);
-  console.log('Correct:', currentQuestion.value.correctAnswers);
-
+  
   if (currentQuestion.value.questionType === 'single-choice') {
-    if (selectedAnswer.value === currentQuestion.value.correctAnswers[0]) {
-      resultMessage.value = '✅ Correct answer!'
-      resultMessageClass.value = 'text-green-600';
+    console.log('Single choice question');
+    console.log('Selected answer:', selectedAnswer.value);
+    console.log('Correct answer:', currentQuestion.value.correctAnswers[0]);
+    
+    isAnswerCorrect.value = selectedAnswer.value === currentQuestion.value.correctAnswers[0];
+    
+    if (isAnswerCorrect.value) {
+      resultMessage.value = 'Correct answer!'
       resultExplanation.value = currentQuestion.value.explanation;
-      resultExplanationClass.value = 'text-black';
     } else {
-      resultMessage.value = '❌ Wrong answer. Try again!';
-      resultMessageClass.value = 'text-red-600';
+      resultMessage.value = 'Wrong answer. Try again!';
     }
   } else if (currentQuestion.value.questionType === 'multiple-choice') {
-    const selected = new Set(selectedAnswers.value);
-    const correct = new Set(currentQuestion.value.correctAnswers);
+    console.log('Multiple choice question');
+    console.log('Selected answers:', selectedAnswers.value);
+    console.log('Correct answers:', currentQuestion.value.correctAnswers);
     
-    // Check if all correct answers are selected and no incorrect answers are selected
-    const isCorrect = currentQuestion.value.correctAnswers.every(answer => selected.has(answer)) &&
-      selectedAnswers.value.every(answer => correct.has(answer));
+    // Convert to arrays and sort for consistent comparison
+    const selected = [...selectedAnswers.value].sort();
+    const correct = [...currentQuestion.value.correctAnswers].sort();
     
-    if (isCorrect) { + currentQuestion.value.explanation;
-      resultMessage.value = '✅ All correct answers selected!'
-      resultMessageClass.value = 'text-green-600';
+    console.log('Sorted selected:', selected);
+    console.log('Sorted correct:', correct);
+    
+    // Check if arrays are exactly equal
+    isAnswerCorrect.value = selected.length === correct.length && 
+      selected.every((value, index) => value === correct[index]);
+    
+    console.log('Is correct:', isAnswerCorrect.value);
+    
+    if (isAnswerCorrect.value) {
+      resultMessage.value = 'All correct answers selected!'
       resultExplanation.value = currentQuestion.value.explanation;
-      resultExplanationClass.value = 'text-black';
     } else {
-      resultMessage.value = '❌ Not all correct answers were selected. Try again!';
-      resultMessageClass.value = 'text-red-600';
+      resultMessage.value = 'Not all correct answers were selected. Try again!';
     }
   }
 };
@@ -182,6 +199,7 @@ const nextQuestion = () => {
   selectedAnswers.value = [];
   resultMessage.value = '';
   resultExplanation.value = '';
+  isAnswerCorrect.value = false;
   currentIndex.value = (currentIndex.value + 1) % questions.value.length;
   currentQuestion.value = questions.value[currentIndex.value];
 };
