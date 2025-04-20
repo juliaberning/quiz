@@ -3,36 +3,45 @@
     <v-row justify="center">
       <v-col cols="12" md="8" lg="6">
         <v-card class="elevation-4">
-          <v-card-title class="text-h5 pa-4">
-            {{ currentQuestion.text }}
+          <v-card-title class="text-h5 pa-4 text-wrap">
+            <span v-html="currentQuestion.text"></span>
           </v-card-title>
 
           <v-card-text>
             <v-radio-group
               v-if="currentQuestion.questionType === 'single-choice'"
               v-model="selectedAnswer"
+              class="pa-2"
             >
               <v-radio
                 v-for="(answer, index) in currentQuestion.answers"
                 :key="index"
                 :value="answer"
-                :label="answer"
-                class="mb-2"
-              ></v-radio>
+                class="mb-0"
+              >
+                <template v-slot:label>
+                  <span v-html="answer"></span>
+                </template>
+              </v-radio>
             </v-radio-group>
 
-            <div v-else>
+            <div v-else class="pa-2">
               <v-checkbox
                 v-for="(answer, index) in currentQuestion.answers"
                 :key="index"
                 :value="answer"
-                :label="answer"
-                class="mb-2"
+                class="mb-0"
+                density="compact"
                 @update:model-value="(checked) => toggleAnswer(answer, checked)"
-              ></v-checkbox>
+              >
+                <template v-slot:label>
+                  <span v-html="answer"></span>
+                </template>
+              </v-checkbox>
             </div>
             <div class="d-flex flex-start ga-2">
               <v-btn
+              :disabled="!selectedAnswer && currentQuestion.questionType === 'single-choice' || !selectedAnswers.length && currentQuestion.questionType === 'multiple-choice'"
               color="primary"
               class="mt-4"
               @click="checkAnswer"
@@ -41,7 +50,7 @@
             </v-btn>
             <v-btn
               v-if="showResult"
-              color="success"
+              color="deep-purple-accent-4"
               class="mt-4"
               @click="nextQuestion"
             >
@@ -58,7 +67,7 @@
               {{ resultMessage }}
             </v-alert>
               <div v-if="resultExplanation" class="mt-2">
-                {{ resultExplanation }}
+                <span v-html="resultExplanation"></span>
               </div>
             
 
@@ -86,33 +95,33 @@ const questions = ref([
   {
     questionType: 'single-choice',
     text: 'Which directive is used for two-way data binding in Vue?',
-    answers: ['v-if', 'v-for', 'v-bind', 'v-model'],
-    correctAnswers: ['v-model'],
-    explanation: 'The v-model directive is used for two-way data binding in Vue.',
+    answers: ['<code>v-if</code>', '<code>v-for</code>', '<code>v-bind</code>', '<code>v-model</code>'],
+    correctAnswers: ['<code>v-model</code>'],
+    explanation: 'The <code>v-model</code> directive is used for two-way data binding in Vue.',
     tags: ['vue'],
     difficulty: 'easy'
   },
   {
     questionType: 'single-choice',
     text: 'Which lifecycle hook is called after the component is mounted?',
-    answers: ['beforeCreate', 'created', 'mounted', 'beforeUnmount'],
-    correctAnswers: ['mounted'],
-    explanation: 'The mounted hook is called after the component is mounted.',
+    answers: ['<code>beforeCreate</code>', '<code>created</code>', '<code>mounted</code>', '<code>beforeUnmount</code>'],
+    correctAnswers: ['<code>mounted</code>'],
+    explanation: 'The <code>mounted</code> hook is called after the component is mounted.',
     tags: ['vue'],
     difficulty: 'easy'
   },
   {
     questionType: 'multiple-choice',
     text: 'Which lifecycle hooks from the Options API are not available as dedicated hooks in the Composition API?',
-    answers: ['beforeCreate', 'created', 'beforeMount', 'mounted', 'beforeUpdate', 'updated', 'beforeUnmount', 'unmounted'],
-    correctAnswers: ['beforeCreate', 'created'],
-    explanation: 'In the Composition API, `setup()` runs before any lifecycle hooks and serves the same purpose as `beforeCreate` and `created`, so those two hooks are no longer needed or exposed as separate functions.',
+    answers: ['<code>beforeCreate</code>', '<code>created</code>', '<code>beforeMount</code>', '<code>mounted</code>', '<code>beforeUpdate</code>', '<code>updated</code>', '<code>beforeUnmount</code>', '<code>unmounted</code>'],
+    correctAnswers: ['<code>beforeCreate</code>', '<code>created</code>'],
+    explanation: 'In the Composition API, <code>setup()</code> runs before any lifecycle hooks and serves the same purpose as <code>beforeCreate</code> and <code>created</code>, so those two hooks are no longer needed or exposed as separate functions.',
     tags: ['vue'],
     difficulty: 'medium'
   }, 
   {
     questionType: "single-choice",
-    text: "What is the main advantage of using `<script setup>` in Vue 3?",
+    text: "What is the main advantage of using <code>&lt;script setup&gt;</code> in Vue 3?",
     answers: [
       "It automatically exposes all top-level bindings to the template",
       "It provides better TypeScript support than the Options API",
@@ -120,7 +129,7 @@ const questions = ref([
       "All of the above"
     ],
     correctAnswers: ["All of the above"],
-    explanation: "The `<script setup>` syntax in Vue 3 combines several benefits: it automatically exposes all top-level bindings to the template, provides better TypeScript support through better type inference, and significantly reduces boilerplate code by eliminating the need for the `setup()` function and explicit returns.",
+    explanation: "The <code>&lt;script setup&gt;</code> syntax in Vue 3 combines several benefits: it automatically exposes all top-level bindings to the template, provides better TypeScript support through better type inference, and significantly reduces boilerplate code by eliminating the need for the <code>setup()</code> function and explicit returns.",
     tags: ['vue', 'typescript'],
     difficulty: "intermediate"
   }

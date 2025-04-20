@@ -3,6 +3,7 @@
     <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
     
     <v-toolbar-title>Quiz App</v-toolbar-title>
+    <v-toolbar-title v-if="userStore.isAuthenticated"> Hello, {{ userStore.name }}</v-toolbar-title>
 
     <v-spacer></v-spacer>
 
@@ -35,6 +36,9 @@
 
 <script setup>
 import { ref } from 'vue'
+import useUserStore from '@/stores/user'
+
+const userStore = useUserStore()
 
 const drawer = ref(false)
 
@@ -42,6 +46,7 @@ const menuItems = [
   { title: 'Home', to: '/' },
   { title: 'Quiz', to: '/quiz' },
   { title: 'Sign Up', to: '/signup' },
-  { title: 'Login', to: '/login' }
+  { title: 'Login', to: '/login' },
+  { title: 'Logout', to: '/logout' }
 ]
 </script>
