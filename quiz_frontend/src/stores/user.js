@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useToastStore } from '@/stores/toast'
 
 const useUserStore = defineStore('user', {
     state: () => ({
@@ -14,17 +16,31 @@ const useUserStore = defineStore('user', {
 
     actions: {
         initStore() {
-            if (localStorage.getItem('user.access')) {
-                this.access = JSON.parse(localStorage.getItem('user.access') || '')
-                this.refresh = JSON.parse(localStorage.getItem('user.refresh') || '')
-                this.id = JSON.parse(localStorage.getItem('user.id') || '')
-                this.name = JSON.parse(localStorage.getItem('user.name') || '')
-                this.email = JSON.parse(localStorage.getItem('user.email') || '')
+            const access = localStorage.getItem('user.access')
+            const refresh = localStorage.getItem('user.refresh')
+            const id = localStorage.getItem('user.id')
+            const name = localStorage.getItem('user.name')
+            const email = localStorage.getItem('user.email')
+
+            if (access && refresh) {
+                this.access = access
+                this.refresh = refresh
+                this.id = id
+                this.name = name
+                this.email = email
                 this.isAuthenticated = true
 
+                // Set the authorization header
+                axios.defaults.headers.common['Authorization'] = "Bearer " + access
+
+                // Refresh the token
                 this.refreshToken()
 
-                console.log('Initialized users', this)
+                console.log('Initialized user store:', {
+                    isAuthenticated: this.isAuthenticated,
+                    name: this.name,
+                    email: this.email
+                })
             }
         },
 
@@ -71,7 +87,7 @@ const useUserStore = defineStore('user', {
         },
 
         refreshToken() {
-            axios.post('api/v1/account/refresh/', {
+            axios.post('/api/refresh/', {
                 refresh: this.refresh
             })
             .then(response => {
@@ -82,9 +98,20 @@ const useUserStore = defineStore('user', {
                 axios.defaults.headers.common['Authorization'] = "Bearer " + response.data.access
             })
             .catch((error) => {
-                console.log('Error', error)
+                console.log('Error refreshing token:', error)
                 this.removeToken()
             })
+        },
+
+        logout() {
+            this.removeToken()
+            delete axios.defaults.headers.common['Authorization']
+            
+            const router = useRouter()
+            const toastStore = useToastStore()
+            
+            toastStore.showToast('Successfully logged out!', 'success')
+            router.push('/login')
         }
     },
 })

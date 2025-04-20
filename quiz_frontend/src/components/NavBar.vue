@@ -16,6 +16,13 @@
       >
         {{ item.title }}
       </v-btn>
+      <v-btn
+        v-if="userStore.isAuthenticated"
+        variant="text"
+        @click="userStore.logout"
+      >
+        Logout
+      </v-btn>
     </v-toolbar-items>
   </v-app-bar>
 
@@ -30,6 +37,11 @@
         :to="item.to"
         :title="item.title"
       ></v-list-item>
+      <v-list-item
+        v-if="userStore.isAuthenticated"
+        title="Logout"
+        @click="userStore.logout"
+      ></v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -39,14 +51,12 @@ import { ref } from 'vue'
 import useUserStore from '@/stores/user'
 
 const userStore = useUserStore()
-
 const drawer = ref(false)
 
 const menuItems = [
   { title: 'Home', to: '/' },
   { title: 'Quiz', to: '/quiz' },
   { title: 'Sign Up', to: '/signup' },
-  { title: 'Login', to: '/login' },
-  { title: 'Logout', to: '/logout' }
+  { title: 'Login', to: '/login' }
 ]
 </script>
