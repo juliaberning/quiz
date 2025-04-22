@@ -83,6 +83,133 @@
 import { ref, watch } from 'vue';
 
 const questions = ref([
+  {
+      questionType: "single-choice",
+      text: "What does the type definition <code>ref&lt;string[]&gt;([])</code> mean in TypeScript?",
+      answers: [
+        "A reactive reference to an array that can contain any type of values, initialized as an empty array",
+        "A reactive reference to an array that can only contain strings, initialized as an empty array",
+        "A non-reactive array of strings, initialized as an empty array",
+        "A reactive reference to a string, initialized as an empty string"
+      ],
+      correctAnswers: ["A reactive reference to an array that can only contain strings, initialized as an empty array"],
+      explanation: "The type definition <code>ref&lt;string[]&gt;([])</code> means: <ol><li><code>ref</code> creates a reactive reference</li><li><code>string[]</code> specifies that the array can only contain strings</li><li><code>[]</code> initializes it as an empty array</li></ol> This provides type safety by preventing non-string values from being added to the array.",
+      tags: ['typescript', 'vue'],
+      difficulty: "intermediate"
+  },
+  {
+    questionType: 'single-choice',
+    text: 'What is the primary benefit of using <code>defineModel()</code> in Vue 3.4 with <code>&lt;script setup&gt;</code>?',
+    answers: [
+      'It allows global access to all model values without props.',
+      'It replaces the need to define emits manually.',
+      'It simplifies the declaration of a prop that works with <code>v-model</code>.',
+      'It automatically syncs state between parent and child without any binding.'
+    ],
+    correctAnswers: ['It simplifies the declaration of a prop that works with <code>v-model</code>.'],
+    explanation: '<code>defineModel()</code> streamlines the definition of a prop and an emit event that are commonly used with <code>v-model</code>, removing boilerplate code from child components.',
+    tags: ['vue', 'typescript'],
+    difficulty: 'easy'
+  },
+  {
+    questionType: 'multiple-choice',
+    text: 'Which of the following are true about using <code>defineModel()</code> in Vue 3.4+?',
+    answers: [
+      'You can type the model value using generics.',
+      'It automatically emits <code>update:modelValue</code>.',
+      'It can be used multiple times in the same component for multiple v-model bindings.',
+      'It replaces the need for <code>defineProps</code> and <code>defineEmits</code> entirely.',
+      'It requires you to define an explicit prop named <code>modelValue</code>.'
+    ],
+    correctAnswers: [
+      'You can type the model value using generics.',
+      'It automatically emits <code>update:modelValue</code>.',
+      'It can be used multiple times in the same component for multiple v-model bindings.'
+    ],
+    explanation: '<code>defineModel()</code> lets you define model props with types using generics, and it auto-generates the <code>update:modelValue</code> event. It also supports multiple models with named arguments like <code>defineModel("title")</code>.',
+    tags: ['vue', 'typescript'],
+    difficulty: 'medium'
+  },
+  {
+    questionType: 'single-choice',
+    text: 'What does "tree-shaking" mean in modern frontend development?',
+    answers: [
+      'It’s the process of deleting old Git branches.',
+      'It’s a way to reduce memory usage during runtime.',
+      'It’s a technique to remove unused code from the final JavaScript bundle.',
+      'It’s a method of refreshing the DOM tree after a state update.'
+    ],
+    correctAnswers: ['It’s a technique to remove unused code from the final JavaScript bundle.'],
+    explanation: 'Tree-shaking is a process performed by modern bundlers like Vite, Rollup, or Webpack to eliminate dead (unused) code from your final build. This helps keep your app lightweight and fast by only including the code that is actually used.',
+    tags: ['javascript', 'build-tools'],
+    difficulty: 'easy'
+  },
+  {
+    questionType: 'multiple-choice',
+    text: 'What are benefits of using an object with <code>as const</code> instead of a TypeScript <code>enum</code>?',
+    answers: [
+      'It avoids runtime code generation in the compiled JavaScript.',
+      'It provides full type inference and literal types.',
+      'It supports bidirectional mapping like enums.',
+      'It helps keep the code tree-shakable.',
+      'It allows values to be mutated at runtime.'
+    ],
+    correctAnswers: [
+      'It avoids runtime code generation in the compiled JavaScript.',
+      'It provides full type inference and literal types.',
+      'It helps keep the code tree-shakable.'
+    ],
+    explanation: 'Using <code>as const</code> with an object keeps the structure immutable and ensures literal types. Unlike enums, it avoids extra runtime code and is tree-shakable, making it more performant and predictable.',
+    tags: ['typescript'],
+      difficulty: 'medium'
+  },
+  {
+    questionType: 'single-choice',
+    text: 'What is a common issue with using <code>enum</code> in TypeScript?',
+    answers: [
+    'Enums are not supported in JavaScript, so they cause compile-time errors.',
+    'Enums cannot be used as types in TypeScript.',
+    'Enums are not tree-shakable and can add unnecessary code to the bundle.',
+    'Enums are always immutable by default.'
+    ],
+    correctAnswers: ['Enums are not tree-shakable and can add unnecessary code to the bundle.'],
+    explanation: 'TypeScript <code>enum</code>s are compiled into real JavaScript objects, even if you don’t use them later in your code. This means they are always included in your final build, which can make your JavaScript files bigger than needed. That’s why they are not "tree-shakable", which means the bundler can’t remove unused code.',
+    tags: ['typescript', 'javascript'],
+    difficulty: 'medium'
+    },
+    {
+    questionType: 'single-choice',
+    text: 'What is the purpose of the <code>&lt;VBtn&gt;</code> component in Vuetify?',
+    answers: [
+      'To create routing links between pages.',
+      'To define custom button behavior with native JavaScript.',
+      'To provide a styled and accessible button component that follows Material Design.',
+      'To handle button click events only.'
+    ],
+    correctAnswers: ['To provide a styled and accessible button component that follows Material Design.'],
+    explanation: '<code>&lt;VBtn&gt;</code> is a Vuetify component used to create buttons that are visually consistent and follow Material Design guidelines. It includes built-in accessibility, theming, and responsiveness — no custom CSS needed.',
+    tags: ['vue', 'vuetify', 'ui'],
+    difficulty: 'easy'
+  },
+  {
+  questionType: 'multiple-choice',
+  text: 'Why might using Vuetify’s <code>&lt;VBtn&gt;</code> component be better than using a regular <code>&lt;button&gt;</code> element?',
+  answers: [
+    'It comes with built-in styles that match the app’s design system.',
+    'It automatically supports themes like dark/light mode.',
+    'It makes the button clickable without JavaScript.',
+    'It ensures accessibility and proper keyboard interaction.',
+    'It prevents double-clicks by default.'
+    ],
+    correctAnswers: [
+      'It comes with built-in styles that match the app’s design system.',
+      'It automatically supports themes like dark/light mode.',
+      'It ensures accessibility and proper keyboard interaction.'
+    ],
+    explanation: 'Vuetify’s <code>&lt;VBtn&gt;</code> component is styled according to Material Design and integrates with Vuetify’s theming system. It also includes accessibility features out of the box, such as proper ARIA roles and keyboard navigation.',
+    tags: ['vue', 'vuetify', 'ui'],
+    difficulty: 'easy'
+  },
   { 
     questionType: 'single-choice',
     text: 'What is Vue.js?',
@@ -138,7 +265,7 @@ const questions = ref([
 const currentIndex = ref(0);
 const currentQuestion = ref(questions.value[currentIndex.value]);
 const selectedAnswer = ref('');
-const selectedAnswers = ref([]);
+const selectedAnswers = ref<string[]>([]);
 const showResult = ref(false);
 const resultMessage = ref('');
 const resultExplanation = ref('');
